@@ -17,10 +17,9 @@ function addCard(cardValue) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const deleteButton = cardElement.querySelector('.card__delete-button');
   cardElement.querySelector('.card__title').textContent = cardValue.split('*')[0];
-  cardElement.querySelector('.card__image').alt = cardValue.split('*')[0];;
-  cardElement.querySelector('.card__image').src = cardValue.split('*')[1];;
+  cardElement.querySelector('.card__image').alt = cardValue.split('*')[0];
+  cardElement.querySelector('.card__image').src = cardValue.split('*')[1];
   placesList.append(cardElement);
-  console.log(cardElement)
   deleteButton.addEventListener('click', removeCard);
 };
 
