@@ -6,7 +6,7 @@ function removeCard(event) {
   itemRemove.remove();
 }
 
-function createCard(item) {
+function createCard(item, removeCard) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const deleteButton = cardElement.querySelector('.card__delete-button');
   const cardImage = cardElement.querySelector('.card__image');
@@ -23,6 +23,6 @@ function addCard(createdCard) {
 } 
 
 initialCards.forEach(function(item) {
-  const createdCard = createCard(item);
+  const createdCard = createCard(item, removeCard);
   addCard(createdCard);
 })
