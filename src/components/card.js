@@ -2,6 +2,9 @@ import {openModal} from './modals.js'
 
 const placesList = document.querySelector('.places__list');
 const cardTemplate = document.querySelector('#card-template').content;
+const popupTypeImage = document.querySelector('.popup_type_image');
+const imagePopupTypeImage = popupTypeImage.querySelector('.popup__image');
+const captionPopupTypeImage = popupTypeImage.querySelector('.popup__caption');
 
 //удаление карточки
 function removeCard(event) {
@@ -16,16 +19,15 @@ function likeCard(event) {
 }
 
 //попап карточки
-function popupCard(event){
-  const modalDOM = document.querySelector('.popup_type_image');
-  openModal(modalDOM);
-  modalDOM.querySelector('.popup__image').src = event.target.src;
-  modalDOM.querySelector('.popup__image').alt = event.target.alt;
-  modalDOM.querySelector('.popup__caption').textContent = event.target.alt;
+function handleImageClick(event){
+  openModal(popupTypeImage);
+  imagePopupTypeImage.src = event.target.src;
+  imagePopupTypeImage.alt = event.target.alt;
+  captionPopupTypeImage.textContent = event.target.alt;
 }
 
 //создание карточки
-function createCard(item) {
+function createCard(item, removeCard, likeCard, handleImageClick) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const deleteButton = cardElement.querySelector('.card__delete-button');
   const cardImage = cardElement.querySelector('.card__image');
@@ -36,7 +38,7 @@ function createCard(item) {
   cardImage.src = item.link;
   deleteButton.addEventListener('click', removeCard);
   likeButton.addEventListener('click', likeCard);
-  cardImage.addEventListener('click', popupCard)
+  cardImage.addEventListener('click', handleImageClick)
   return cardElement;
 }
 
@@ -45,4 +47,4 @@ function addCard(createdCard) {
   placesList.append(createdCard);
 } 
 
-export {createCard, addCard}
+export {createCard, addCard, removeCard, likeCard, handleImageClick}
