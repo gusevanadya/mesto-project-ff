@@ -5,22 +5,25 @@ import {openModal, closeModal} from './components/modals.js'
 
 //вывод объекта initialCards
 initialCards.forEach(function(item) {
-  const createdCard = createCard(item, removeCard, likeCard, handleImageClick);
+  const createdCard = createCard(item, {
+    removeCard,
+    likeCard,
+    handleImageClick,
+  });
   addCard(createdCard);
 })
 
-//
+//анимация попапов, закрытие по крестику и оверлею
 const popups = document.querySelectorAll('.popup')
-
 popups.forEach(function(popup) {
   popup.classList.add('popup_is-animated');
   popup.addEventListener('mousedown', function(evt) {
-      if (evt.target.classList.contains('popup_is-opened')) {
-        closeModal(popup)
-      }
-      if (evt.target.classList.contains('popup__close')) {
-        closeModal(popup)
-      }
+    if (evt.target.classList.contains('popup_is-opened')) {
+      closeModal(popup)
+    }
+    if (evt.target.classList.contains('popup__close')) {
+      closeModal(popup)
+    }
   })
 })
 
@@ -63,7 +66,11 @@ function handleCardFormSubmit(evt) {
   const item = {};
   item.name = placeNameInput.value;
   item.link = linkInput.value;
-  const createdCard = createCard(item);
+  const createdCard = createCard(item,{
+    removeCard,
+    likeCard,
+    handleImageClick,
+  });
   placesList.prepend(createdCard);
   addCardForm.reset();
   closeModal(popupTypeNewCard);

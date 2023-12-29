@@ -27,7 +27,11 @@ function handleImageClick(event){
 }
 
 //создание карточки
-function createCard(item, removeCard, likeCard, handleImageClick) {
+function createCard(item, {
+  removeCard,
+  likeCard,
+  handleImageClick,
+}) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const deleteButton = cardElement.querySelector('.card__delete-button');
   const cardImage = cardElement.querySelector('.card__image');
