@@ -1,0 +1,6 @@
+.popup__button_disabled {
+  background: rgba(0, 0, 0);
+  border: 1px solid white;
+  opacity: 20%;
+  filter: invert(1);
+}
