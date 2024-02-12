@@ -14,12 +14,9 @@ Promise.all([getUserData(), getInitialCards()])
     profileAvatar.style.backgroundImage = `url('${userData.avatar}')`;
     initialCards.forEach(function(item) {
       const createdCard = createCard(item, {
-        removeCard,
         handleImageClick,
         handleLikeCard,
-        handleDeleteCard,
-        closeModal,
-        openModal,
+        openPopupConfirm,
         userId
       });
       addCard(placesList, createdCard);
@@ -77,6 +74,7 @@ function handleProfileFormSubmit(evt) {
   const name = nameInput.value;
   const about = jobInput.value;
   editProfileData(name, about)
+    .then(changeButton(buttonProfileFormSubmit))
     .then(function(data) {
       console.log('Данные обновлены');
       profileTitle.textContent = data.name;
@@ -86,7 +84,7 @@ function handleProfileFormSubmit(evt) {
       console.log(err);
     })
     .finally(function() {
-      changeButton(buttonProfileFormSubmit);
+      buttonProfileFormSubmit.textContent = 'Сохранить'
       buttonProfileFormSubmit.classList.add(formObject.inactiveButtonClass); 
     })
   closeModal(popupTypeEdit);
@@ -98,7 +96,6 @@ profileForm.addEventListener('submit', handleProfileFormSubmit);
   openModal(popupTypeEdit);
   nameInput.value = profileTitle.textContent;
   jobInput.value = profileDescription.textContent;
-  profileForm.querySelector(`${formObject.submitButtonSelector}`).textContent = 'Сохранить'
 });
 
 //редактирование аватара
@@ -112,8 +109,7 @@ const avatarLinkInput = avatarForm.link;
  buttonOpenPopupAvatar.addEventListener('click', function() {
   openModal(popupTypeAvatar);
   avatarLinkInput.value = '';
-  avatarForm.querySelector(`${formObject.submitButtonSelector}`).textContent = 'Сохранить'
-});
+  });
 popupTypeAvatar.querySelector('.popup__close').addEventListener('click', function() {
   closeModal(popupTypeAvatar); 
   clearValidation(formObject, avatarForm);
@@ -126,18 +122,19 @@ avatarForm.addEventListener('submit', function(evt) {
   evt.preventDefault();
   const link = avatarLinkInput.value;
   changeAvatar(link)
+    .then(changeButton(avatarButton))
     .then(function(link) {
       const newAva = link.avatar;
       changeAvatarElement(newAva);
       console.log('Аватар обновлен');
-      closeModal(popupTypeAvatar);
+      avatarButton.classList.add(formObject.inactiveButtonClass);
     })
     .catch(function(err) {
       console.log(err);
     })
-    .finally(function() {
-      changeButton(avatarButton);
-      avatarButton.classList.add(formObject.inactiveButtonClass); 
+    .finally(function(res) {
+        closeModal(popupTypeAvatar);
+        avatarButton.textContent = 'Сохранить'
     })
 });
 
@@ -162,24 +159,22 @@ function handleCardFormSubmit(evt) {
   changeButton(buttonElement);
   addNewCard(item)
     .then(function(item) {
-      const createdCard = createCard(item,{
-        removeCard,
-        openModal,
+      const createdCard = createCard(item, {
         handleImageClick,
         handleLikeCard,
-        handleDeleteCard,
+        openPopupConfirm,
         userId
       });
       placesList.prepend(createdCard);
       addCardForm.reset();
       clearValidation(addCardForm, formObject);
       closeModal(popupTypeNewCard);
+      buttonElement.classList.add(formObject.inactiveButtonClass);
     })
     .catch(function(err) {
       console.log(err);
     })
     .finally(function() {
-      buttonElement.classList.add(formObject.inactiveButtonClass);
       buttonElement.textContent = 'Создать'
     })
 }
@@ -198,18 +193,28 @@ function handleImageClick(event){
   //удаление карточки
 const popupTypeDelete = document.querySelector('.popup_type_delete');
 const buttonConfirmRemoving = popupTypeDelete.querySelector('.popup_type_delete-button');
-function handleDeleteCard(cardId, cardElement) {
-  buttonConfirmRemoving.addEventListener('click', function() {
-    removeCardFromServer(cardId)
-      .then(function() {
-        removeCard(cardElement);
-        closeModal(popupTypeDelete);      
-      })
-      .catch(function(err) {
-        console.log(err)
-      })
-  })
+let cardDeleted;
+let cardId;
+function openPopupConfirm(card, evt) {
+  openModal(popupTypeDelete);
+  cardDeleted = evt.target.closest('.card');
+  cardId = card._id;
 }
+function handleDeleteCard (){
+  removeCardFromServer(cardId, cardDeleted)
+    .then(function() {
+      removeCard(cardDeleted);     
+    })
+    .catch(function(err) {
+      console.log(err)
+    })
+    .finally(function() {
+      closeModal(popupTypeDelete);
+    })
+}
+buttonConfirmRemoving.addEventListener('click', function() {
+  handleDeleteCard(openPopupConfirm)
+})
 
   //лайк карточки
 function handleLikeCard(likeStatus, cardId, likeButton, likeCounter) { 

@@ -77,7 +77,7 @@ function removeLike(cardId, likeButton, likeCounter) {
     .then(handleResponse);
 }
 
-function removeCardFromServer(cardId) {
+function removeCardFromServer(cardId, cardDeleted) {
   return fetch(`${config.baseUrl}/cards/${cardId}`, {
     method: "DELETE",
     headers: config.headers,

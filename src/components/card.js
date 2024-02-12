@@ -1,5 +1,4 @@
 const cardTemplate = document.querySelector('#card-template').content;
-const popupTypeDelete = document.querySelector('.popup_type_delete');
 
 //удаление карточки
 function removeCard(card) {
@@ -21,8 +20,7 @@ function checkLikeStatus(likeButton) {
 function createCard(item, {
   handleImageClick,
   handleLikeCard,
-  openModal,
-  handleDeleteCard,
+  openPopupConfirm,
   userId
 }) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
@@ -49,8 +47,7 @@ function createCard(item, {
   });
   if (item.owner._id === userId) {
     deleteButton.addEventListener('click', function(evt) {
-      handleDeleteCard(cardId, cardElement);
-      openModal(popupTypeDelete); 
+      openPopupConfirm(item, evt);
     })
   } 
   else {
